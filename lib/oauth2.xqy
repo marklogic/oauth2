@@ -54,7 +54,6 @@ declare function oauth2:facebookUserProfileInfo($access_token)  {
  :) 
 declare function oauth2:githubUserProfileInfo($access_token)  {
     let $profile_url := fn:concat("https://github.com/api/v2/xml/user/show?access_token=", $access_token)
-    let $_ := xdmp:log($access_token)
     let $cmd := fn:concat("xquery version '1.0-ml'; xdmp:http-get('", 
                           $profile_url, 
                           "')")
