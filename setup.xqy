@@ -3,7 +3,8 @@ import module namespace oauth-user = "oauth2" at "/lib/oauth2.xqy";
 import module namespace security-util = "security-util" at "/lib/security-util.xqy";
 
 let $_ := security-util:createRole("oauth-anon", "Anonymous user role for oauth example")
-let $_ := security-util:createRole("oauth-user", "Base user role for oauth example")
+let $_ := security-util:createRole("oauth-user", "Anonymous user role for oauth example")
+let $_ := security-util:createRole("oauth-admin", "Admin user role for oauth example")
 
 let $addRoles := security-util:addPrivileges("oauth-anon", 
     ("http://marklogic.com/xdmp/privileges/xdmp-invoke",
@@ -16,19 +17,20 @@ let $addRoles := security-util:addPrivileges("oauth-anon",
      "http://marklogic.com/xdmp/privileges/grant-all-roles",
      "http://marklogic.com/xdmp/privileges/get-user-names",
      "http://marklogic.com/xdmp/privileges/xdmp-value"))           
-
-let $existingUsers := security-util:getExistingUsers()
-let $oauth-user-user := 
-    if("oauth-anon" = $existingUsers) then 
-        "User oauth-anon already exists"
-    else
-        xdmp:eval(
-            "xquery version '1.0-ml'; 
-            import module namespace sec='http://marklogic.com/xdmp/security' at '/MarkLogic/security.xqy';
-            sec:create-user('oauth-anon', 'OAuth2 Anonymous User', 'password', 'oauth-anon', (), ())", (),
-            <options xmlns="xdmp:eval"><database>{xdmp:database("Security")}</database> </options>)     
-
+return (
+    xdmp:eval(
+    "xquery version '1.0-ml'; 
+    import module namespace sec='http://marklogic.com/xdmp/security' at '/MarkLogic/security.xqy';
+    sec:create-user('oauth-anon', 'OAuth2 Anonymous User', 'password', 'oauth-anon', (), ())", (),
+    <options xmlns="xdmp:eval"><database>{xdmp:database("Security")}</database> </options>)     
+  , xdmp:eval(
+    "xquery version '1.0-ml'; 
+    import module namespace sec='http://marklogic.com/xdmp/security' at '/MarkLogic/security.xqy';
+    sec:create-user('oauth-admin', 'OAuth2 Admin User', 'password', 'oauth-admin', (), ())", (),
+    <options xmlns="xdmp:eval"><database>{xdmp:database("Security")}</database> </options>)
+  ),
 let $_ := security-util:addRoleToRole("oauth-user", "oauth-anon")
+let $_ := security-util:addRoleToRole("oauth-admin", "oauth-user")
 
 let $_ := xdmp:document-insert("/config/oauth-config.xml",
     <oauth_config>
