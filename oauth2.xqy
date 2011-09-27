@@ -25,7 +25,8 @@ return
     if(not($code)) then
         xdmp:redirect-response($authorization_url)
     else 
-        let $access_token_response := xdmp:http-get($access_token_url)
+        let $access_token_response := xdmp:http-get($access_token_url,
+          <options xmlns='xdmp:http-get'><format xmlns='xdmp:document-get'>text</format></options>)
         return
             if($access_token_response[1]/xdmphttp:code/text() eq "200") then
                 let $oauth_token_data := oauth2:parseAccessToken($access_token_response[2])

@@ -54,6 +54,7 @@ declare function oauth2:facebookUserProfileInfo($access_token)  {
  :) 
 declare function oauth2:githubUserProfileInfo($access_token)  {
     let $profile_url := fn:concat("https://github.com/api/v2/xml/user/show?access_token=", $access_token)
+    let $_ := xdmp:log($access_token)
     let $cmd := fn:concat("xquery version '1.0-ml'; xdmp:http-get('", 
                           $profile_url, 
                           "')")
@@ -84,8 +85,9 @@ declare function oauth2:githubUserProfileInfo($access_token)  {
 declare function oauth2:parseAccessToken($responseText) as item()+ {
    let $params := fn:tokenize($responseText, "&amp;")
    let $access_token := fn:tokenize($params[1], "=")[2]
-   let $expires_seconds := if($params[2]) then fn:tokenize($params[2], "=")[2] else ()
-   let $expires := if($params[2]) then fn:current-dateTime() + xs:dayTimeDuration(fn:concat("PT", $expires_seconds, "S")) else ()
+   let $tokens          := fn:tokenize($params[2], "=")
+   let $expires_seconds := if($tokens[1] and $tokens[1] != 'token_type') then $tokens[2] else () (: github api fix :)
+   let $expires := if($expires_seconds) then fn:current-dateTime() + xs:dayTimeDuration(fn:concat("PT", $expires_seconds, "S")) else ()
    let $user_data := map:map()
    let $key := map:put($user_data, "access_token", $access_token)
    let $key := map:put($user_data, "expires", $expires)
