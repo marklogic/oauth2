@@ -48,6 +48,15 @@ let $_ := xdmp:document-insert("/config/oauth-config.xml",
             <authorize_url>https://github.com/login/oauth/authorize</authorize_url>
             <redirect_url>http://localhost:8020/oauth2-github.xqy</redirect_url>
         </provider>
+        <!-- See https://code.google.com/apis/console/ -->
+        <provider name="google">
+            <id>your-client-id-here</id>
+            <secret>your-client-secret-here</secret>
+            <api_key>your-api-key-here</api_key>
+            <access_token_url>https://accounts.google.com/o/oauth2/token</access_token_url>
+            <authorize_url>https://accounts.google.com/o/oauth2/auth</authorize_url>
+            <redirect_url>http://localhost:8020/oauth2-google.xqy</redirect_url>
+        </provider>
     </oauth_config>,
         (xdmp:permission("oauth-anon", "read"), xdmp:permission("oauth-admin", "update"))
 )
