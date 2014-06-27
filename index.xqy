@@ -21,11 +21,11 @@ return
         </style>
     </head>
 <body>
-<div id="login-action"> 
+<div id="login-action">
     {
-        if( $isLoggedIn ) then 
-            element a { attribute href { "/logout.xqy" }, "Logout" } 
-        else 
+        if( $isLoggedIn ) then
+            element a { attribute href { "/logout.xqy" }, "Logout" }
+        else
             element div {
                 element span { "Log in with "},
                 element br {},
@@ -33,7 +33,11 @@ return
                 element br {},
                 element span { " or "},
                 element br {},
-                element a { attribute href { "/oauth2-github.xqy" }, "Github" }                 
+                element a { attribute href { "/oauth2-github.xqy" }, "Github" },
+                element br {},
+                element span { " or "},
+                element br {},
+                element a { attribute href { "/oauth2-google.xqy" }, "Google+" }
             }
     }
 </div>
